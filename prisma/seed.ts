@@ -41,7 +41,7 @@ const urbaClubs = [
   // PRIMERA B (2026)
   { name: 'CUQ', shortName: 'CUQ', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/07/cudequilmes.png` },
   { name: 'Liceo Naval', shortName: 'Liceo', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Liceo-Naval.png` },
-  { name: 'San Martín RC', shortName: 'San Martín', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Martín RC', shortName: 'San Martín', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${WIKI}Club_san_martin_logo.png` },
   { name: 'San Patricio', shortName: 'San Patricio', division: 'Primera B', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: `${WIKI}Sanpatricio_rugbylogo.png` },
   { name: 'Mariano Moreno', shortName: 'Mar. Moreno', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Mariano-Moreno.png` },
   { name: 'Delta RC', shortName: 'Delta', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Delta-Rugby-Club.png` },
@@ -60,7 +60,7 @@ const urbaClubs = [
   { name: 'Centro Naval', shortName: 'Centro Naval', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2025/06/EscudoCN-color.png` },
   { name: 'SITAS', shortName: 'SITAS', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/SITAS.png` },
   { name: 'Lanús RC', shortName: 'Lanús', division: 'Primera C', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Asociacion-Lanus-Rugby.png` },
-  { name: 'DAOM', shortName: 'DAOM', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#C8102E', logoUrl: `${WIKI}Club_DAOM.png` },
+  { name: 'DAOM', shortName: 'DAOM', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#C8102E', logoUrl: `${WIKI}Daom_badge_copia.png` },
   { name: 'Ciudad de Buenos Aires RC', shortName: 'CABA RC', division: 'Primera C', primaryColor: '#FFCC00', secondaryColor: '#003082', logoUrl: `${URBA}2024/03/Escudo-Club-Ciudad-2000-.png` },
   { name: 'Areco RC', shortName: 'Areco', division: 'Primera C', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Logo-Institucional-4.jpeg` },
   { name: 'Club Virreyes', shortName: 'Virreyes', division: 'Primera C', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: `${URBA}2024/03/Virreyes-Rugby-Club.png` },
