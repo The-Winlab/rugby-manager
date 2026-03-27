@@ -42,23 +42,38 @@ jobs:
             NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Deploy to EasyPanel
+        env:
+          EASYPANEL_URL: https://xhgix3.easypanel.host
+          EASYPANEL_EMAIL: ${{ secrets.EASYPANEL_EMAIL }}
+          EASYPANEL_PASSWORD: ${{ secrets.EASYPANEL_PASSWORD }}
+          IMAGE_TAG: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          GH_ACTOR: ${{ github.actor }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -s -X POST "https://xhgix3.easypanel.host/api/trpc/services.app.updateSourceImage" \
-            -H "Authorization: Bearer ${{ secrets.EASYPANEL_TOKEN }}" \
+          # Login to get a fresh session token
+          echo "Logging in to EasyPanel..."
+          LOGIN_RESPONSE=$(curl -sf --retry 3 --retry-delay 5 \
+            -X POST "$EASYPANEL_URL/api/trpc/auth.login" \
             -H "Content-Type: application/json" \
-            -d '{
-              "json": {
-                "projectName": "rugby-manager",
-                "serviceName": "app",
-                "source": {
-                  "type": "image",
-                  "image": "ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}",
-                  "username": "${{ github.actor }}",
-                  "password": "${{ secrets.GITHUB_TOKEN }}"
-                }
-              }
-            }'
-          curl -s -X POST "https://xhgix3.easypanel.host/api/trpc/services.app.deployService" \
-            -H "Authorization: Bearer ${{ secrets.EASYPANEL_TOKEN }}" \
+            -d "{\"json\":{\"email\":\"$EASYPANEL_EMAIL\",\"password\":\"$EASYPANEL_PASSWORD\"}}")
+
+          TOKEN=$(echo "$LOGIN_RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['result']['data']['json']['token'])")
+          echo "Login OK"
+
+          # Update image source
+          echo "Updating image source..."
+          curl -sf --retry 3 --retry-delay 5 \
+            -X POST "$EASYPANEL_URL/api/trpc/services.app.updateSourceImage" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"json\":{\"projectName\":\"rugby-manager\",\"serviceName\":\"app\",\"source\":{\"type\":\"image\",\"image\":\"$IMAGE_TAG\",\"username\":\"$GH_ACTOR\",\"password\":\"$GH_TOKEN\"}}}"
+          echo "Image updated"
+
+          # Trigger deploy
+          echo "Triggering deploy..."
+          curl -sf --retry 3 --retry-delay 5 \
+            -X POST "$EASYPANEL_URL/api/trpc/services.app.deployService" \
+            -H "Authorization: Bearer $TOKEN" \
             -H "Content-Type: application/json" \
             -d '{"json":{"projectName":"rugby-manager","serviceName":"app"}}'
+          echo "Deploy triggered"
