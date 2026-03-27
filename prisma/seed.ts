@@ -2,69 +2,100 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+const WIKI = 'https://en.wikipedia.org/wiki/Special:FilePath/'
+
 const urbaClubs = [
-  { name: 'Alumni Athletic Club', shortName: 'Alumni', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Banco Nación', shortName: 'Banco Nación', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Belgrano Athletic Club', shortName: 'Belgrano', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'Buenos Aires Cricket & Rugby Club', shortName: 'BACRC', primaryColor: '#003082', secondaryColor: '#CC0000' },
-  { name: 'Champagnat', shortName: 'Champagnat', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'Club Atletico del Rosario', shortName: 'CAR', primaryColor: '#003082', secondaryColor: '#FFCC00' },
-  { name: 'Curupayti', shortName: 'Curupayti', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'Del Libertador', shortName: 'Del Libertador', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'Delta RC', shortName: 'Delta', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'El Nacional', shortName: 'El Nacional', primaryColor: '#003082', secondaryColor: '#FFCC00' },
-  { name: 'Estudiantes de Buenos Aires', shortName: 'Estudiantes', primaryColor: '#CC0000', secondaryColor: '#000000' },
-  { name: 'Gimnasia y Esgrima de Buenos Aires', shortName: 'GEBA', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Hindu Club', shortName: 'Hindu', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'LICEO', shortName: 'LICEO', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Los Matreros', shortName: 'Los Matreros', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'Los Tilos', shortName: 'Los Tilos', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'Manuel Belgrano', shortName: 'Manuel Belgrano', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Natacion y Gimnasia', shortName: 'Natación', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'Newman', shortName: 'Newman', primaryColor: '#003082', secondaryColor: '#FFCC00' },
-  { name: 'Old Boys', shortName: 'Old Boys', primaryColor: '#009B3A', secondaryColor: '#000000' },
-  { name: 'Old Christians', shortName: 'Old Christians', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Old Georgian RC', shortName: 'Old Georgian', primaryColor: '#CC0000', secondaryColor: '#003082' },
-  { name: 'Old Resian', shortName: 'Old Resian', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Olivos RC', shortName: 'Olivos', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'PUCARÁ', shortName: 'Pucará', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'Regatas Bella Vista', shortName: 'Regatas', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'Richmond RC', shortName: 'Richmond', primaryColor: '#009B3A', secondaryColor: '#000000' },
-  { name: 'San Albano', shortName: 'San Albano', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'San Andrés', shortName: 'San Andrés', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'San Cirano', shortName: 'San Cirano', primaryColor: '#003082', secondaryColor: '#FFCC00' },
-  { name: 'San Luis', shortName: 'San Luis', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'San Patricio', shortName: 'San Patricio', primaryColor: '#009B3A', secondaryColor: '#FFFFFF' },
-  { name: 'SIC – San Isidro Club', shortName: 'SIC', primaryColor: '#CC0000', secondaryColor: '#003082' },
-  { name: 'Tala RC', shortName: 'Tala', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
-  { name: 'USAM', shortName: 'USAM', primaryColor: '#CC0000', secondaryColor: '#FFFFFF' },
-  { name: 'ZAR RC', shortName: 'ZAR', primaryColor: '#003082', secondaryColor: '#FFFFFF' },
+  // TOP 12 (2025)
+  { name: 'Newman', shortName: 'Newman', division: 'Top 12', primaryColor: '#C8102E', secondaryColor: '#000000', logoUrl: `${WIKI}Club_Newman_rugby.svg` },
+  { name: 'San Isidro Club', shortName: 'SIC', division: 'Top 12', primaryColor: '#C8102E', secondaryColor: '#003082', logoUrl: `${WIKI}San_Isidro_Club.png` },
+  { name: 'Hindú Club', shortName: 'Hindú', division: 'Top 12', primaryColor: '#00843D', secondaryColor: '#C8102E', logoUrl: `${WIKI}Hind%C3%BA_Club.png` },
+  { name: 'CASI', shortName: 'CASI', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${WIKI}Club_Atl%C3%A9tico_de_San_Isidro.png` },
+  { name: 'Belgrano Athletic Club', shortName: 'Belgrano', division: 'Top 12', primaryColor: '#C8102E', secondaryColor: '#000000', logoUrl: `${WIKI}Belgrano_Athletic_Club_logo.png` },
+  { name: 'Alumni Athletic Club', shortName: 'Alumni', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: `${WIKI}Alumni_Athletic_Club_logo.png` },
+  { name: 'Club de Regatas Bella Vista', shortName: 'Regatas', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'CUBA', shortName: 'CUBA', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Buenos Aires Cricket & Rugby Club', shortName: 'BACRC', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#C8102E', logoUrl: null },
+  { name: 'Club Pucará', shortName: 'Pucará', division: 'Top 12', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'La Plata Rugby Club', shortName: 'La Plata', division: 'Top 12', primaryColor: '#003082', secondaryColor: '#FFCC00', logoUrl: null },
+  { name: 'Los Tilos', shortName: 'Los Tilos', division: 'Top 12', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+
+  // PRIMERA A
+  { name: 'Los Matreros', shortName: 'Matreros', division: 'Primera A', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Atlético del Rosario', shortName: 'CAR', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFCC00', logoUrl: null },
+  { name: 'Champagnat', shortName: 'Champagnat', division: 'Primera A', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Luis', shortName: 'San Luis', division: 'Primera A', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Cirano', shortName: 'San Cirano', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFCC00', logoUrl: null },
+  { name: 'Pueyrredón', shortName: 'Pueyrredón', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Banco Nación', shortName: 'Banco Nación', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Club Italiano', shortName: 'Club Italiano', division: 'Primera A', primaryColor: '#00843D', secondaryColor: '#C8102E', logoUrl: null },
+  { name: 'Liceo Naval', shortName: 'Liceo', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Patricio', shortName: 'San Patricio', division: 'Primera A', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Club Argentino de Rugby', shortName: 'Argentino', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Vicentinos', shortName: 'Vicentinos', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Don Bosco', shortName: 'Don Bosco', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFCC00', logoUrl: null },
+  { name: 'Delta RC', shortName: 'Delta', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Manuel Belgrano', shortName: 'M. Belgrano', division: 'Primera A', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Monte Grande', shortName: 'Monte Grande', division: 'Primera A', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+
+  // PRIMERA B
+  { name: 'Old Christians', shortName: 'Old Christians', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Old Georgian RC', shortName: 'Old Georgian', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#003082', logoUrl: null },
+  { name: 'Old Resian', shortName: 'Old Resian', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Olivos RC', shortName: 'Olivos', division: 'Primera B', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Richmond RC', shortName: 'Richmond', division: 'Primera B', primaryColor: '#00843D', secondaryColor: '#000000', logoUrl: null },
+  { name: 'San Albano', shortName: 'San Albano', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Andrés', shortName: 'San Andrés', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Estudiantes de Buenos Aires', shortName: 'Estudiantes', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#000000', logoUrl: null },
+  { name: 'Natación y Gimnasia', shortName: 'Natación', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'USAM', shortName: 'USAM', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'ZAR RC', shortName: 'ZAR', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'GEBA', shortName: 'GEBA', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'El Nacional', shortName: 'El Nacional', division: 'Primera B', primaryColor: '#003082', secondaryColor: '#FFCC00', logoUrl: null },
+  { name: 'Curupayti', shortName: 'Curupayti', division: 'Primera B', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+
+  // PRIMERA C
+  { name: 'DAOM', shortName: 'DAOM', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#C8102E', logoUrl: `${WIKI}Club_DAOM.png` },
+  { name: 'CASA de Padua', shortName: 'CASA Padua', division: 'Primera C', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Club Virreyes', shortName: 'Virreyes', division: 'Primera C', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Miguel RC', shortName: 'San Miguel', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Los Molinos', shortName: 'Los Molinos', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Centro Naval', shortName: 'Centro Naval', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Lanús RC', shortName: 'Lanús', division: 'Primera C', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: "Saint Brendan's", shortName: "St. Brendan's", division: 'Primera C', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Del Sur', shortName: 'Del Sur', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Areco RC', shortName: 'Areco', division: 'Primera C', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'SITAS', shortName: 'SITAS', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Carlos', shortName: 'San Carlos', division: 'Primera C', primaryColor: '#C8102E', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Ciudad de Buenos Aires RC', shortName: 'CABA RC', division: 'Primera C', primaryColor: '#FFCC00', secondaryColor: '#003082', logoUrl: null },
+  { name: 'Luján RC', shortName: 'Luján', division: 'Primera C', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+
+  // PRIMERA D
+  { name: 'Del Libertador', shortName: 'Del Libertador', division: 'Primera D', primaryColor: '#00843D', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'Old Boys', shortName: 'Old Boys', division: 'Primera D', primaryColor: '#00843D', secondaryColor: '#000000', logoUrl: null },
+  { name: 'Tala RC', shortName: 'Tala', division: 'Primera D', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
+  { name: 'San Martín RC', shortName: 'San Martín', division: 'Primera D', primaryColor: '#003082', secondaryColor: '#FFFFFF', logoUrl: null },
 ]
 
 async function main() {
   console.log('Seeding URBA clubs...')
-
-  // Delete existing URBA clubs and re-seed for idempotency
   await prisma.club.deleteMany({ where: { isUrbaClub: true } })
-
   await prisma.club.createMany({
     data: urbaClubs.map((club) => ({
       name: club.name,
       shortName: club.shortName,
       primaryColor: club.primaryColor,
       secondaryColor: club.secondaryColor,
+      logoUrl: club.logoUrl,
+      division: club.division,
       isUrbaClub: true,
     })),
   })
-
-  console.log(`Seeded ${urbaClubs.length} URBA clubs successfully.`)
+  const byDiv: Record<string, number> = {}
+  for (const c of urbaClubs) { byDiv[c.division] = (byDiv[c.division] ?? 0) + 1 }
+  console.log(`Seeded ${urbaClubs.length} URBA clubs:`)
+  for (const [div, count] of Object.entries(byDiv)) { console.log(`  ${div}: ${count}`) }
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+  .catch((e) => { console.error(e); process.exit(1) })
+  .finally(async () => { await prisma.$disconnect() })

@@ -16,6 +16,7 @@ model Club {
   primaryColor   String?  @map("primary_color")
   secondaryColor String?  @map("secondary_color")
   isUrbaClub     Boolean  @default(true) @map("is_urba_club")
+  division       String?
   foundedYear    Int?     @map("founded_year")
   groundName     String?  @map("ground_name")
   createdAt      DateTime @default(now()) @map("created_at")

@@ -17,7 +17,7 @@ export default async function ClubSelectionPage() {
 
   const clubs = await prisma.club.findMany({
     where: { isUrbaClub: true },
-    orderBy: { name: 'asc' },
+    orderBy: [{ division: 'asc' }, { name: 'asc' }],
   })
 
   return <ClubSelector clubs={clubs} userId={user.id} />
