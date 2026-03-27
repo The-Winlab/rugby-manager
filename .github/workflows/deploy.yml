@@ -66,7 +66,7 @@ jobs:
             -X POST "$EASYPANEL_URL/api/trpc/services.app.updateSourceImage" \
             -H "Authorization: Bearer $TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"json\":{\"projectName\":\"rugby-manager\",\"serviceName\":\"app\",\"source\":{\"type\":\"image\",\"image\":\"$IMAGE_TAG\",\"username\":\"$GH_ACTOR\",\"password\":\"$GH_TOKEN\"}}}"
+            -d "{\"json\":{\"projectName\":\"rugby-manager\",\"serviceName\":\"app\",\"image\":\"$IMAGE_TAG\",\"username\":\"$GH_ACTOR\",\"password\":\"$GH_TOKEN\"}}"
           echo "Image updated"
 
           # Trigger deploy
