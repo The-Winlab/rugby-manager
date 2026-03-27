@@ -20,21 +20,27 @@ export default function RegisterPage() {
     e.preventDefault()
     setLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    })
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      })
 
-    if (error) {
-      toast.error(error.message)
+      if (error) {
+        toast.error(error.message)
+        return
+      }
+
+      toast.success('Cuenta creada. Revisá tu email para confirmarla.')
+      router.push('/auth/login')
+    } catch (err) {
+      toast.error('Error al crear la cuenta. Intentá de nuevo.')
+      console.error(err)
+    } finally {
       setLoading(false)
-      return
     }
-
-    toast.success('Cuenta creada. Revisá tu email para confirmarla.')
-    router.push('/auth/login')
   }
 
   return (

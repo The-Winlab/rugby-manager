@@ -20,17 +20,23 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
-      toast.error(error.message)
+      if (error) {
+        toast.error(error.message)
+        return
+      }
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      toast.error('Error al iniciar sesión. Intentá de nuevo.')
+      console.error(err)
+    } finally {
       setLoading(false)
-      return
     }
-
-    router.push('/dashboard')
-    router.refresh()
   }
 
   async function handleGoogleLogin() {
