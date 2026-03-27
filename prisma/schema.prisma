@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Club {
+  id             String   @id @default(uuid())
+  name           String
+  shortName      String?  @map("short_name")
+  logoUrl        String?  @map("logo_url")
+  primaryColor   String?  @map("primary_color")
+  secondaryColor String?  @map("secondary_color")
+  isUrbaClub     Boolean  @default(true) @map("is_urba_club")
+  foundedYear    Int?     @map("founded_year")
+  groundName     String?  @map("ground_name")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  userProfiles    UserProfile[]
+  players         Player[]
+  homeMatches     Match[]       @relation("HomeClub")
+  opponentMatches Match[]       @relation("OpponentClub")
+
+  @@map("clubs")
+}
+
+model UserProfile {
+  id        String   @id
+  clubId    String?  @map("club_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  club Club? @relation(fields: [clubId], references: [id])
+
+  @@map("user_profiles")
+}
+
+model Player {
+  id              String    @id @default(uuid())
+  clubId          String    @map("club_id")
+  fullName        String    @map("full_name")
+  jerseyNumber    Int?      @map("jersey_number")
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  primaryPosition String?   @map("primary_position")
+  altPosition     String?   @map("alt_position")
+  status          String    @default("available")
+  availableFrom   DateTime? @map("available_from") @db.Date
+  notes           String?
+  photoUrl        String?   @map("photo_url")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  club           Club                @relation(fields: [clubId], references: [id])
+  matchLineups   MatchLineup[]
+  matchEvents    MatchEvent[]        @relation("EventPlayer")
+  subMatchEvents MatchEvent[]        @relation("SubPlayer")
+  ratings        PlayerMatchRating[]
+
+  @@index([clubId])
+  @@map("players")
+}
+
+model Match {
+  id             String   @id @default(uuid())
+  userClubId     String   @map("user_club_id")
+  opponentId     String?  @map("opponent_id")
+  opponentName   String?  @map("opponent_name")
+  isHome         Boolean  @map("is_home")
+  matchDate      DateTime @map("match_date")
+  round          String?
+  competition    String?
+  season         String
+  venue          String?
+  status         String   @default("upcoming")
+  weather        String?
+  homeScore      Int      @default(0) @map("home_score")
+  awayScore      Int      @default(0) @map("away_score")
+  matchSequence  Int?     @map("match_sequence")
+  coachNotesPre  String?  @map("coach_notes_pre")
+  coachNotesPost String?  @map("coach_notes_post")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  club     Club                @relation("HomeClub", fields: [userClubId], references: [id])
+  opponent Club?               @relation("OpponentClub", fields: [opponentId], references: [id])
+  lineups  MatchLineup[]
+  events   MatchEvent[]
+  ratings  PlayerMatchRating[]
+
+  @@index([userClubId])
+  @@index([season])
+  @@map("matches")
+}
+
+model MatchLineup {
+  id           String   @id @default(uuid())
+  matchId      String   @map("match_id")
+  playerId     String   @map("player_id")
+  position     String?
+  role         String
+  jerseyNumber Int?     @map("jersey_number")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@index([matchId])
+  @@index([playerId])
+  @@map("match_lineups")
+}
+
+model MatchEvent {
+  id             String   @id @default(uuid())
+  matchId        String   @map("match_id")
+  team           String
+  eventType      String   @map("event_type")
+  minute         Int
+  playerId       String?  @map("player_id")
+  subPlayerId    String?  @map("sub_player_id")
+  result         String?
+  infractionType String?  @map("infraction_type")
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  match     Match   @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player    Player? @relation("EventPlayer", fields: [playerId], references: [id])
+  subPlayer Player? @relation("SubPlayer", fields: [subPlayerId], references: [id])
+
+  @@index([matchId])
+  @@index([playerId])
+  @@map("match_events")
+}
+
+model PlayerMatchRating {
+  id            String   @id @default(uuid())
+  matchId       String   @map("match_id")
+  playerId      String   @map("player_id")
+  rating        Float
+  minutesPlayed Int?     @map("minutes_played")
+  isManOfMatch  Boolean  @default(false) @map("is_man_of_match")
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, playerId])
+  @@index([matchId])
+  @@index([playerId])
+  @@map("player_match_ratings")
+}

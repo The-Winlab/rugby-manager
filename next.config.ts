@@ -1,7 +1,8 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  reactStrictMode: true,
+  // PWA se configura en Fase 8 con @ducanh2912/next-pwa
+}
 
-export default nextConfig;
+export default nextConfig

@@ -1,0 +1,24 @@
+export const dynamic = 'force-dynamic'
+
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
+import ClubSelector from './ClubSelector'
+
+export default async function ClubSelectionPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/auth/login')
+
+  // Check if user already has a club
+  const profile = await prisma.userProfile.findUnique({ where: { id: user.id } })
+  if (profile?.clubId) redirect('/dashboard')
+
+  const clubs = await prisma.club.findMany({
+    where: { isUrbaClub: true },
+    orderBy: { name: 'asc' },
+  })
+
+  return <ClubSelector clubs={clubs} userId={user.id} />
+}
