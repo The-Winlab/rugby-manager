@@ -69,6 +69,15 @@ jobs:
             -d "{\"json\":{\"projectName\":\"rugby-manager\",\"serviceName\":\"app\",\"image\":\"$IMAGE_TAG\",\"username\":\"$GH_ACTOR\",\"password\":\"$GH_TOKEN\"}}"
           echo "Image updated"
 
+          # Ensure runtime env vars are set
+          echo "Setting env vars..."
+          curl -sf --retry 3 --retry-delay 5 \
+            -X POST "$EASYPANEL_URL/api/trpc/services.app.updateEnv" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"json\":{\"projectName\":\"rugby-manager\",\"serviceName\":\"app\",\"env\":\"DATABASE_URL=${{ secrets.DATABASE_URL }}\nDIRECT_URL=${{ secrets.DIRECT_URL }}\"}}"
+          echo "Env vars set"
+
           # Trigger deploy
           echo "Triggering deploy..."
           curl -sf --retry 3 --retry-delay 5 \
