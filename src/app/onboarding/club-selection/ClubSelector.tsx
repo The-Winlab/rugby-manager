@@ -13,13 +13,12 @@ interface Props {
   userId: string
 }
 
-const DIVISION_ORDER = ['Top 12', 'Primera A', 'Primera B', 'Primera C', 'Primera D']
+const DIVISION_ORDER = ['Top 14', 'Primera A', 'Primera B', 'Primera C']
 const DIVISION_LABELS: Record<string, string> = {
-  'Top 12': 'Top 12',
+  'Top 14': 'Top 14',
   'Primera A': 'Primera A',
   'Primera B': 'Primera B',
   'Primera C': 'Primera C',
-  'Primera D': 'Primera D',
 }
 
 function ClubLogo({ club }: { club: Club }) {
