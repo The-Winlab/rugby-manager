@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -30,14 +29,12 @@ export async function POST(request: Request) {
     update: { clubId },
   })
 
-  // Set cookie so middleware knows club is selected
-  const cookieStore = await cookies()
-  cookieStore.set('rugby_manager_has_club', '1', {
+  const response = NextResponse.json({ success: true, club })
+  response.cookies.set('rugby_manager_has_club', '1', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 365, // 1 year
   })
-
-  return NextResponse.json({ success: true, club })
+  return response
 }
