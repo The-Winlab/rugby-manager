@@ -29,12 +29,5 @@ export async function POST(request: Request) {
     update: { clubId },
   })
 
-  const response = NextResponse.json({ success: true, club })
-  response.cookies.set('rugby_manager_has_club', '1', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-  })
-  return response
+  return NextResponse.json({ success: true, club })
 }

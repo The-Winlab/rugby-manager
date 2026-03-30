@@ -39,17 +39,5 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect to club selection if authenticated but no club selected
-  if (user && pathname !== '/onboarding/club-selection' && !isPublicRoute) {
-    // Check if user has a club profile (done via API to avoid DB call in middleware)
-    // We rely on a cookie set after onboarding for performance
-    const hasClub = request.cookies.get('rugby_manager_has_club')?.value
-    if (!hasClub) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/onboarding/club-selection'
-      return NextResponse.redirect(url)
-    }
-  }
-
   return supabaseResponse
 }
