@@ -74,13 +74,14 @@ export default function ClubSelector({ clubs, userId }: Props) {
         body: JSON.stringify({ clubId: selected.id }),
       })
       if (!res.ok) {
-        toast.error('Error al guardar el club. Intentá de nuevo.')
+        const body = await res.json().catch(() => ({}))
+        toast.error(`Error ${res.status}: ${body.error ?? 'Error al guardar el club'}`, { duration: 8000 })
         return
       }
       toast.success(`¡Bienvenido a ${selected.name}!`)
       window.location.href = '/dashboard'
-    } catch {
-      toast.error('Error al guardar el club. Intentá de nuevo.')
+    } catch (e) {
+      toast.error(`Error inesperado: ${e instanceof Error ? e.message : 'desconocido'}`, { duration: 8000 })
     } finally {
       setLoading(false)
     }
