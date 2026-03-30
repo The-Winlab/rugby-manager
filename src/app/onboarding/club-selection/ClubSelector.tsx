@@ -1,15 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { Shield, Search, CheckCircle2 } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { Shield, Search, CheckCircle2, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import type { Club } from '@prisma/client'
 
 interface Props {
   clubs: Club[]
-  userId: string
+  selectClub: (clubId: string) => Promise<void>
 }
 
 const DIVISION_ORDER = ['Top 14', 'Primera A', 'Primera B', 'Primera C']
@@ -47,10 +46,10 @@ function ClubLogo({ club }: { club: Club }) {
   )
 }
 
-export default function ClubSelector({ clubs, userId }: Props) {
+export default function ClubSelector({ clubs, selectClub }: Props) {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Club | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const filtered = clubs.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,27 +63,11 @@ export default function ClubSelector({ clubs, userId }: Props) {
     return acc
   }, {})
 
-  async function handleConfirm() {
+  function handleConfirm() {
     if (!selected) return
-    setLoading(true)
-    try {
-      const res = await fetch('/api/onboarding/select-club', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clubId: selected.id }),
-      })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        toast.error(`Error ${res.status}: ${body.error ?? 'Error al guardar el club'}`, { duration: 8000 })
-        return
-      }
-      toast.success(`¡Bienvenido a ${selected.name}!`)
-      window.location.href = '/dashboard'
-    } catch (e) {
-      toast.error(`Error inesperado: ${e instanceof Error ? e.message : 'desconocido'}`, { duration: 8000 })
-    } finally {
-      setLoading(false)
-    }
+    startTransition(async () => {
+      await selectClub(selected.id)
+    })
   }
 
   return (
@@ -163,7 +146,7 @@ export default function ClubSelector({ clubs, userId }: Props) {
             <div className="bg-[#1E2D4A] border border-[#2A3A5C] rounded-2xl px-6 py-4 flex items-center gap-6 shadow-2xl">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 flex items-center justify-center">
-                  <ClubLogo club={{ ...selected, logoUrl: selected.logoUrl }} />
+                  <ClubLogo club={selected} />
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">{selected.name}</p>
@@ -172,10 +155,17 @@ export default function ClubSelector({ clubs, userId }: Props) {
               </div>
               <Button
                 onClick={handleConfirm}
-                disabled={loading}
+                disabled={isPending}
                 className="bg-[#00D68F] hover:bg-[#00B87A] text-[#0F1923] font-bold px-6"
               >
-                {loading ? 'Guardando...' : 'Confirmar'}
+                {isPending ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Guardando...
+                  </span>
+                ) : (
+                  'Confirmar'
+                )}
               </Button>
             </div>
           </div>

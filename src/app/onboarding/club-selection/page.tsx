@@ -20,5 +20,23 @@ export default async function ClubSelectionPage() {
     orderBy: [{ division: 'asc' }, { name: 'asc' }],
   })
 
-  return <ClubSelector clubs={clubs} userId={user.id} />
+  async function selectClub(clubId: string) {
+    'use server'
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/auth/login')
+
+    const club = await prisma.club.findUnique({ where: { id: clubId } })
+    if (!club) throw new Error('Club not found')
+
+    await prisma.userProfile.upsert({
+      where: { id: user.id },
+      create: { id: user.id, clubId },
+      update: { clubId },
+    })
+
+    redirect('/dashboard')
+  }
+
+  return <ClubSelector clubs={clubs} selectClub={selectClub} />
 }
