@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Shield, Search, CheckCircle2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -49,7 +48,6 @@ function ClubLogo({ club }: { club: Club }) {
 }
 
 export default function ClubSelector({ clubs, userId }: Props) {
-  const router = useRouter()
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Club | null>(null)
   const [loading, setLoading] = useState(false)
@@ -80,8 +78,7 @@ export default function ClubSelector({ clubs, userId }: Props) {
         return
       }
       toast.success(`¡Bienvenido a ${selected.name}!`)
-      router.push('/dashboard')
-      router.refresh()
+      window.location.href = '/dashboard'
     } catch {
       toast.error('Error al guardar el club. Intentá de nuevo.')
     } finally {
