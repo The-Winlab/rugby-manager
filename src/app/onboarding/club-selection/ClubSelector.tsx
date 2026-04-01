@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 import { Shield, Search, CheckCircle2, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -8,7 +9,7 @@ import type { Club } from '@prisma/client'
 
 interface Props {
   clubs: Club[]
-  selectClub: (clubId: string) => Promise<void>
+  selectClub: (clubId: string) => Promise<{ success: true; clubName: string } | { success: false; error: string }>
 }
 
 const DIVISION_ORDER = ['Top 14', 'Primera A', 'Primera B', 'Primera C']
@@ -66,7 +67,13 @@ export default function ClubSelector({ clubs, selectClub }: Props) {
   function handleConfirm() {
     if (!selected) return
     startTransition(async () => {
-      await selectClub(selected.id)
+      const result = await selectClub(selected.id)
+      if (!result.success) {
+        toast.error(`Error: ${result.error}`, { duration: 15000 })
+        return
+      }
+      toast.success(`¡Bienvenido a ${result.clubName}!`)
+      window.location.href = '/dashboard'
     })
   }
 
