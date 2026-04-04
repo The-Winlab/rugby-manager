@@ -1,15 +1,15 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Shield, Search, CheckCircle2, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { createClient } from '@/lib/supabase/client'
 import type { Club } from '@prisma/client'
 
 interface Props {
   clubs: Club[]
-  selectClub: (clubId: string) => Promise<{ success: true; clubName: string } | { success: false; error: string }>
 }
 
 const DIVISION_ORDER = ['Top 14', 'Primera A', 'Primera B', 'Primera C']
@@ -47,10 +47,10 @@ function ClubLogo({ club }: { club: Club }) {
   )
 }
 
-export default function ClubSelector({ clubs, selectClub }: Props) {
+export default function ClubSelector({ clubs }: Props) {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Club | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [loading, setLoading] = useState(false)
 
   const filtered = clubs.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,17 +64,42 @@ export default function ClubSelector({ clubs, selectClub }: Props) {
     return acc
   }, {})
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (!selected) return
-    startTransition(async () => {
-      const result = await selectClub(selected.id)
-      if (!result.success) {
-        toast.error(`Error: ${result.error}`, { duration: 15000 })
+    setLoading(true)
+    try {
+      // Get access token from client-side Supabase (always fresh)
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (!session?.access_token) {
+        toast.error('Tu sesión expiró. Por favor volvé a iniciar sesión.', { duration: 8000 })
+        window.location.href = '/auth/login'
         return
       }
-      toast.success(`¡Bienvenido a ${result.clubName}!`)
+
+      const res = await fetch('/api/onboarding/select-club', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ clubId: selected.id }),
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        toast.error(`Error ${res.status}: ${body.error ?? 'Error al guardar el club'}`, { duration: 10000 })
+        return
+      }
+
+      toast.success(`¡Bienvenido a ${selected.name}!`)
       window.location.href = '/dashboard'
-    })
+    } catch (e) {
+      toast.error(`Error inesperado: ${e instanceof Error ? e.message : String(e)}`, { duration: 10000 })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -162,10 +187,10 @@ export default function ClubSelector({ clubs, selectClub }: Props) {
               </div>
               <Button
                 onClick={handleConfirm}
-                disabled={isPending}
+                disabled={loading}
                 className="bg-[#00D68F] hover:bg-[#00B87A] text-[#0F1923] font-bold px-6"
               >
-                {isPending ? (
+                {loading ? (
                   <span className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Guardando...
