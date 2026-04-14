@@ -31,7 +31,9 @@ export async function updateSession(request: NextRequest) {
 
   // Public routes that don't require auth
   const publicRoutes = ['/auth/login', '/auth/register', '/auth/callback']
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route))
+  const isPublicRoute =
+    publicRoutes.some((route) => pathname.startsWith(route)) ||
+    pathname.startsWith('/api/')  // API routes handle their own auth
 
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()
