@@ -15,6 +15,10 @@ ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+# Dummy DATABASE_URL for build — Prisma Client needs a valid-looking URL at build time
+# even though all pages use force-dynamic and never connect during build
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
+
 RUN npx prisma generate
 RUN npm run build
 
