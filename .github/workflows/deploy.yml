@@ -48,7 +48,7 @@ jobs:
           EASYPANEL_PASSWORD: ${{ secrets.EASYPANEL_PASSWORD }}
           IMAGE_TAG: ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
           GH_ACTOR: ${{ github.actor }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
         run: |
           # Login to get a fresh session token
           echo "Logging in to EasyPanel..."
