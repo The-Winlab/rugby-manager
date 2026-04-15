@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { Shield, Search, CheckCircle2, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { createClient } from '@/lib/supabase/client'
+import { selectClub } from './actions'
 import type { Club } from '@prisma/client'
 
 interface Props {
@@ -68,32 +68,14 @@ export default function ClubSelector({ clubs }: Props) {
     if (!selected) return
     setLoading(true)
     try {
-      // Get access token from client-side Supabase (always fresh)
-      const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
+      const result = await selectClub(selected.id)
 
-      if (!session?.access_token) {
-        toast.error('Tu sesión expiró. Por favor volvé a iniciar sesión.', { duration: 8000 })
-        window.location.href = '/auth/login'
+      if (!result.ok) {
+        toast.error(result.error, { duration: 10000 })
         return
       }
 
-      const res = await fetch('/api/onboarding/select-club', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ clubId: selected.id }),
-      })
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        toast.error(`Error ${res.status}: ${body.error ?? 'Error al guardar el club'}`, { duration: 10000 })
-        return
-      }
-
-      toast.success(`¡Bienvenido a ${selected.name}!`)
+      toast.success(`¡Bienvenido a ${result.clubName}!`)
       window.location.href = '/dashboard'
     } catch (e) {
       toast.error(`Error inesperado: ${e instanceof Error ? e.message : String(e)}`, { duration: 10000 })
