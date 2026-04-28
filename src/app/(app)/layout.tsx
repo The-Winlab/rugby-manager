@@ -1,21 +1,14 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
+import { getAuthUser, getAuthProfile } from '@/lib/auth'
 import Sidebar from '@/components/layout/Sidebar'
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) redirect('/auth/login')
 
-  const profile = await prisma.userProfile.findUnique({
-    where: { id: user.id },
-    include: { club: true },
-  })
-
+  const profile = await getAuthProfile()
   if (!profile?.clubId) redirect('/onboarding/club-selection')
 
   const club = profile.club
@@ -25,6 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Sidebar
         clubName={club?.name}
         clubShortName={club?.shortName ?? undefined}
+        clubLogoUrl={club?.logoUrl ?? undefined}
         clubPrimaryColor={club?.primaryColor ?? undefined}
         clubSecondaryColor={club?.secondaryColor ?? undefined}
       />

@@ -1,21 +1,13 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
+import { getAuthProfile } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 import { Calendar, Users, Trophy, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const profile = await prisma.userProfile.findUnique({
-    where: { id: user.id },
-    include: { club: true },
-  })
-
+  const profile = await getAuthProfile()
   if (!profile?.club) redirect('/onboarding/club-selection')
 
   const club = profile.club
@@ -44,15 +36,23 @@ export default async function DashboardPage() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <div
-          className="w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-          style={{
-            backgroundColor: club.primaryColor ?? '#2A3A5C',
-            color: club.secondaryColor ?? '#FFFFFF',
-          }}
-        >
-          {club.shortName?.slice(0, 3) ?? club.name.slice(0, 2)}
-        </div>
+        {club.logoUrl ? (
+          <img
+            src={club.logoUrl}
+            alt={club.shortName ?? club.name}
+            className="w-12 h-12 rounded-xl object-contain flex-shrink-0 bg-white/5"
+          />
+        ) : (
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+            style={{
+              backgroundColor: club.primaryColor ?? '#2A3A5C',
+              color: club.secondaryColor ?? '#FFFFFF',
+            }}
+          >
+            {club.shortName?.slice(0, 3) ?? club.name.slice(0, 2)}
+          </div>
+        )}
         <div>
           <h1 className="text-2xl font-bold text-white">{club.name}</h1>
           <p className="text-[#8A9BB5] text-sm">Panel de control</p>

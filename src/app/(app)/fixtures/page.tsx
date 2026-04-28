@@ -1,19 +1,12 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@/lib/supabase/server'
+import { getAuthProfile } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import FixturesList from '@/components/fixtures/FixturesList'
 
 export default async function FixturesPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const profile = await prisma.userProfile.findUnique({
-    where: { id: user.id },
-    include: { club: true },
-  })
+  const profile = await getAuthProfile()
   if (!profile?.club) redirect('/onboarding/club-selection')
 
   const club = profile.club

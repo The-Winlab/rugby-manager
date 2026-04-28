@@ -26,6 +26,7 @@ const navItems = [
 interface SidebarProps {
   clubName?: string
   clubShortName?: string
+  clubLogoUrl?: string | null
   clubPrimaryColor?: string
   clubSecondaryColor?: string
 }
@@ -33,6 +34,7 @@ interface SidebarProps {
 export default function Sidebar({
   clubName,
   clubShortName,
+  clubLogoUrl,
   clubPrimaryColor = '#2A3A5C',
   clubSecondaryColor = '#FFFFFF',
 }: SidebarProps) {
@@ -51,12 +53,20 @@ export default function Sidebar({
       {/* Logo / Club */}
       <div className="px-4 py-5 border-b border-[#2A3A5C]">
         <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-            style={{ backgroundColor: clubPrimaryColor, color: clubSecondaryColor }}
-          >
-            {clubShortName?.slice(0, 3).toUpperCase() ?? <Shield className="w-4 h-4" />}
-          </div>
+          {clubLogoUrl ? (
+            <img
+              src={clubLogoUrl}
+              alt={clubShortName ?? clubName ?? 'Club'}
+              className="w-9 h-9 rounded-lg object-contain flex-shrink-0 bg-white/5"
+            />
+          ) : (
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+              style={{ backgroundColor: clubPrimaryColor, color: clubSecondaryColor }}
+            >
+              {clubShortName?.slice(0, 3).toUpperCase() ?? <Shield className="w-4 h-4" />}
+            </div>
+          )}
           <div className="min-w-0">
             <p className="text-white font-semibold text-sm truncate leading-tight">
               {clubName ?? 'Rugby Manager'}

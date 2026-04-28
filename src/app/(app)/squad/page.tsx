@@ -2,16 +2,12 @@ export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthProfile } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import SquadTable from '@/components/squad/SquadTable'
 
 export default async function SquadPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const profile = await prisma.userProfile.findUnique({ where: { id: user.id } })
+  const profile = await getAuthProfile()
   if (!profile?.clubId) redirect('/onboarding/club-selection')
 
   const players = await prisma.player.findMany({
