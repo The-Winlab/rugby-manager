@@ -8,10 +8,10 @@ import {
   Calendar,
   BarChart3,
   Settings,
-  Shield,
   LogOut,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import RugbyLogo from '@/components/ui/RugbyLogo'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
@@ -59,13 +59,15 @@ export default function Sidebar({
               alt={clubShortName ?? clubName ?? 'Club'}
               className="w-9 h-9 rounded-lg object-contain flex-shrink-0 bg-white/5"
             />
-          ) : (
+          ) : clubShortName ? (
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
               style={{ backgroundColor: clubPrimaryColor, color: clubSecondaryColor }}
             >
-              {clubShortName?.slice(0, 3).toUpperCase() ?? <Shield className="w-4 h-4" />}
+              {clubShortName.slice(0, 3).toUpperCase()}
             </div>
+          ) : (
+            <RugbyLogo size={36} className="flex-shrink-0" />
           )}
           <div className="min-w-0">
             <p className="text-white font-semibold text-sm truncate leading-tight">

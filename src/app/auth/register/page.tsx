@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { Shield } from 'lucide-react'
+import RugbyLogo from '@/components/ui/RugbyLogo'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -52,10 +52,8 @@ export default function RegisterPage() {
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-xl bg-[#00D68F] flex items-center justify-center">
-              <Shield className="w-7 h-7 text-[#0F1923]" strokeWidth={2.5} />
-            </div>
+          <div className="flex items-center justify-center mb-3">
+            <RugbyLogo size={48} />
           </div>
           <h1 className="text-2xl font-bold text-white">Rugby Manager</h1>
           <p className="text-[#8A9BB5] text-sm mt-1">URBA Edition</p>
